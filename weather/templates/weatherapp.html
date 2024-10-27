@@ -1,0 +1,95 @@
+{% extends 'index.html' %}
+{% block content %}
+<style>
+    body {
+        background: url('https://i0.wp.com/www.taylorsgardenbuildings.co.uk/blog/wp-content/uploads/2015/06/bg_weather_sunny_day.jpg?ssl=1') no-repeat center center fixed; 
+        background-size: cover; /* Make the background cover the entire area */
+        color: #333; /* Text color */
+        font-family: Arial, sans-serif;
+    }
+
+    .shadow {
+        box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        min-width: 300px;
+        max-width: 400px;
+        text-align: center;
+        position: relative;  /* Added to position the delete button */
+        background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent white background */
+        opacity: 0.95; /* Slight transparency */
+    }
+
+    .delete-button {
+        position: absolute;  /* Position the delete button absolutely */
+        top: 10px;           /* Align it to the top */
+        right: 10px;         /* Align it to the right */
+        text-decoration: none; /* No underline */
+        color: red;         /* Red color for delete button */
+        font-size: 18px;    /* Increase the size of the delete icon */
+    }
+
+    .center-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .weather-icon {
+        max-width: 100px; /* Set maximum width for weather icon */
+        margin: 10px 0;   /* Add margin for spacing */
+    }
+
+    h3, h4 {
+        margin: 5px 0; /* Add spacing between headings */
+    }
+</style>
+<div class="container-fluid" style="margin-top: 60px; margin-bottom: 100px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h3 class="page-header text-primary text-center color-red">
+                <span class="fas fa-cloud-sun"></span> Weather Application
+            </h3>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                    {{ form.name }}
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">
+                            <span class="fa fa-add"></span> Add City
+                        </button>
+                    </span>
+                </div>
+            </form>
+
+            <div class="center-container">
+                {% for city_weather in data %}
+                    <div class="shadow media">
+                        <a href="{% url 'Dcity' city_weather.city %}" class="delete-button" title="Delete City">&#x2718;</a>
+                        <div class="media-left">
+                            <img src="http://openweathermap.org/img/w/{{ city_weather.icon }}.png" class="weather-icon" alt="Weather Icon">
+                        </div>
+                        <div class="media-body">
+                            <h3 class="media-heading"><b>{{ city_weather.city }}</b></h3>
+                            <h4>{{ city_weather.temperature | floatformat:1 }} &deg;C</h4>
+                            <h4>{{ city_weather.description }}</h4>
+                            <h4>Country: {{ city_weather.country }}</h4>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
